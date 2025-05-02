@@ -25,6 +25,32 @@ def calculate_iou(box1, box2):
     # (与 iou.py 中的练习相同，可以复用代码或导入)
     # 提示：计算交集面积和并集面积，然后相除。
     pass
+def calculate_iou(box1, box2):
+    # 计算交集区域的坐标
+    x_left = max(box1[0], box2[0])
+    y_top = max(box1[1], box2[1])
+    x_right = min(box1[2], box2[2])
+    y_bottom = min(box1[3], box2[3])
+
+    # 计算交集区域的面积
+    intersection_width = max(0, x_right - x_left)
+    intersection_height = max(0, y_bottom - y_top)
+    intersection_area = intersection_width * intersection_height
+
+    # 计算两个框各自的面积
+    area1 = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    area2 = (box2[2] - box2[0]) * (box2[3] - box2[1])
+
+    # 计算并集面积
+    union_area = area1 + area2 - intersection_area
+
+    # 处理并集面积为0的情况（避免除以0）
+    if union_area == 0:
+        return 0.0
+
+    # 计算IoU
+    iou = intersection_area / union_area
+    return iou
 
 def nms(boxes, scores, iou_threshold):
     """
@@ -52,4 +78,60 @@ def nms(boxes, scores, iou_threshold):
     #    c. 找到 IoU 小于等于 iou_threshold 的索引 inds。
     #    d. 更新 order，只保留那些 IoU <= threshold 的框的索引 (order = order[inds + 1])。
     # 7. 返回 keep 列表。
-    pass 
+    pass
+
+
+import numpy as np
+
+
+def nms(boxes, scores, iou_threshold):
+    # 处理空输入
+    if len(boxes) == 0:
+        return []
+
+    # 转换为 NumPy 数组（若输入非 NumPy 类型）
+    boxes = np.asarray(boxes)
+    scores = np.asarray(scores)
+
+    # 提取边界框坐标并计算面积
+    x_min, y_min, x_max, y_max = boxes[:, 0], boxes[:, 1], boxes[:, 2], boxes[:, 3]
+    areas = (x_max - x_min) * (y_max - y_min)
+
+    # 根据置信度降序排序的索引
+    order = np.argsort(scores)[::-1]
+
+    keep = []
+    while order.size > 0:
+        # 取出当前最高分的索引
+        current_idx = order[0]
+        keep.append(current_idx)
+
+        # 剩余框的索引（从 order[1:] 开始）
+        remaining_indices = order[1:]
+
+        # 计算当前框与剩余框的交集坐标
+        xx1 = np.maximum(x_min[current_idx], x_min[remaining_indices])
+        yy1 = np.maximum(y_min[current_idx], y_min[remaining_indices])
+        xx2 = np.minimum(x_max[current_idx], x_max[remaining_indices])
+        yy2 = np.minimum(y_max[current_idx], y_max[remaining_indices])
+
+        # 计算交集区域的宽、高和面积
+        intersection_width = np.maximum(0.0, xx2 - xx1)
+        intersection_height = np.maximum(0.0, yy2 - yy1)
+        intersection_area = intersection_width * intersection_height
+
+        # 计算并集面积和 IoU
+        union_area = areas[current_idx] + areas[remaining_indices] - intersection_area
+        iou = intersection_area / (union_area + 1e-10)  # 防止除以零
+
+        # 筛选 IoU 小于等于阈值的框的索引
+        mask = iou <= iou_threshold
+        remaining_indices = remaining_indices[mask]
+
+        # 更新 order，仅保留未被抑制的框
+        order = remaining_indices
+
+    return keep
+
+
+

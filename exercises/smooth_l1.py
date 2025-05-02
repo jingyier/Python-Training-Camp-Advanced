@@ -8,6 +8,8 @@
 请补全下面的函数 `smooth_l1`。
 """
 import numpy as np
+from numpy.ma.core import absolute
+
 
 def smooth_l1(x, sigma=1.0):
     """
@@ -30,4 +32,11 @@ def smooth_l1(x, sigma=1.0):
     # 3. 对满足条件的元素应用第一个公式 (0.5 * (sigma * x)**2)。
     # 4. 对不满足条件的元素应用第二个公式 (|x| - 0.5 / sigma2)。
     # 5. 可以使用 np.where() 来根据条件选择应用哪个公式。
-    pass 
+    pass
+def smooth_l1(x, sigma=1.0):
+    sigma2=sigma**2
+    absolute=np.abs(x)
+    np.where(absolute<1/sigma2)
+    return 0.5* (sigma * x)**2
+    np.where(absolute>=1/sigma2)
+    return absolute - 0.5 / sigma2
