@@ -29,13 +29,21 @@ def image_processing_pipeline(image_path):
     # 6. 使用 try...except 包裹代码以处理可能的异常。
     pass
 def image_processing_pipeline(image_path):
-    image = cv2.imread(image_path)
-    if image is None:
-        return None, None
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gauss=cv2.GaussianBlur(image,(5,5),0)
-    contour=cv2.Canny(gray,100,200)
+
     try:
-        return gauss,contour
+  
+        img = cv2.imread(image_path)
+        if img is None:
+            return None
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 修正颜色转换代码
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        high_thresh, _ = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        low_thresh = 0.5 * high_thresh
+        edges = cv2.Canny(blurred, low_thresh, high_thresh)
+
+        return edges
+
     except Exception as e:
-        print(f"发生错误：{e}")
+        print(f"处理异常: {str(e)}")
+        return None

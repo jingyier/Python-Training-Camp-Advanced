@@ -30,17 +30,22 @@ def contour_detection(image_path):
     # 8. 返回绘制后的图像和轮廓列表。
     # 9. 使用 try...except 处理异常。
     pass
+
 def contour_detection(image_path):
     try:
-        image=cv2.imread(image_path)
-        if image is None:
-            return None, None
-        gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-        _,binary=cv2.threshold(gray,127,255,cv2.THRESH_BINARY)
-        contours,_=cv2.findContours(binary,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        drawing=image.copy()
-        cv2.drawContours(drawing,contours,-1,(255,0,0),2)
-        return drawing,contours
+
+        img = cv2.imread(image_path)
+        if img is None:
+            return (None, None)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        contours = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours = contours[0] if len(contours) == 2 else contours[1]
+        img_contour = img.copy()
+        cv2.drawContours(img_contour, contours, -1, (0, 255, 0), 2)  # 绿色，线宽2
+
+        return (img_contour, contours)
+
     except Exception as e:
-        print(f"发生错误：{e}")
-        return None,None
+        print(f"Error: {str(e)}")
+        return (None, None)
