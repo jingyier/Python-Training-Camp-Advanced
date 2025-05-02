@@ -41,5 +41,6 @@ def conv2d(x, kernel):
     for i in range(out_H):
         for j in range(out_W):
             patch=x[i:i+kH,j:i+kW]
+
     out[i,j]=np.sum(patch * kernel)
     return out
