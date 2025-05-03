@@ -3,11 +3,10 @@ import numpy as np
 import pytest
 import os
 from exercises.image_processing import image_processing_pipeline
-import matplotlib.image as img
 
 def test_image_processing_pipeline():
     # 使用相对路径访问测试图片
-    image_path = r"D:\clone\Python-Training-Camp-Advanced\picture\1.png"
+    image_path = os.path.join("1.png")
     
     # 检查图片是否存在
     if not os.path.exists(image_path):
