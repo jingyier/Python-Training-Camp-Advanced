@@ -9,7 +9,7 @@ class TestContourDetection:
     @classmethod
     def setup_class(cls):
         """测试类初始化"""
-        cls.test_img =r"D:\clone\Python-Training-Camp-Advanced\picture\7.png"
+        cls.test_img = os.path.join("picture","7.png")
         if not os.path.exists(cls.test_img):
            pytest.skip(f"测试图片 {cls.test_img} 不存在")
 
