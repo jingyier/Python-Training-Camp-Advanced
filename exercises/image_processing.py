@@ -36,10 +36,11 @@ def image_processing_pipeline(image_path):
             return None
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 修正颜色转换代码
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        blur = cv2.GaussianBlur(gray, (5, 5), 1.2)
         edges = cv2.Canny(blur, 100, 200)
 
         return edges
 
-    except Exception:
+    except Exception as e:
+        print("处理失败",e)
         return None
