@@ -31,21 +31,34 @@ def contour_detection(image_path):
     # 9. 使用 try...except 处理异常。
     pass
 
+
+import cv2
+import numpy as np
+
+
 def contour_detection(image_path):
     try:
-
         img = cv2.imread(image_path)
         if img is None:
             return (None, None)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        contours = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        contours = contours[0] if len(contours) == 2 else contours[1]
-        img_contour = img.copy()
-        cv2.drawContours(img_contour, contours, -1, (0, 255, 0), 2)  # 绿色，线宽2
+        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        result = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        return (img_contour, contours)
+        if len(result) == 3:
+            _, contours, hierarchy = result
+        elif len(result)==2:
+            contours,hierarchy=result
+        else:
+           raise ValueError("无有效返回值")
+
+
+        result_img = img.copy()
+        cv2.drawContours(result_img, contours, -1, (0, 255, 0), 2)
+        if not isinstance(contours,list):
+            contours=list(contours)
+        return (result_img, contours)
 
     except Exception as e:
-        print(f"Error: {str(e)}")
+        # 异常处理（如路径无效、图像损坏等）
         return (None, None)

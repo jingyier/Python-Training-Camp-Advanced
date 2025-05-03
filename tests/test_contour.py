@@ -1,16 +1,17 @@
 import pytest
+import os
 import cv2
 import numpy as np
-import os
 from exercises.contour_detection import contour_detection
+
 
 class TestContourDetection:
     @classmethod
     def setup_class(cls):
         """测试类初始化"""
-        cls.test_img = os.path.join("picture", "7.png")
+        cls.test_img =r"D:\clone\Python-Training-Camp-Advanced\picture\7.png"
         if not os.path.exists(cls.test_img):
-            pytest.skip(f"测试图片 {cls.test_img} 不存在")
+           pytest.skip(f"测试图片 {cls.test_img} 不存在")
 
     def test_success_case(self):
         """测试正常图片处理"""

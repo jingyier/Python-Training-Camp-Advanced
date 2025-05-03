@@ -31,7 +31,7 @@ def image_processing_pipeline(image_path):
 def image_processing_pipeline(image_path):
 
     try:
-  
+
         img = cv2.imread(image_path)
         if img is None:
             return None
