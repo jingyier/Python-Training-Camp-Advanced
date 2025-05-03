@@ -31,16 +31,13 @@ def image_processing_pipeline(image_path):
 def image_processing_pipeline(image_path):
 
     try:
-
         img = cv2.imread(image_path)
         if img is None:
             return None
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 修正颜色转换代码
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        high_thresh, _ = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        low_thresh = 0.5 * high_thresh
-        edges = cv2.Canny(blurred, low_thresh, high_thresh)
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        edges = cv2.Canny(blur, 100, 200)
 
         return edges
 
