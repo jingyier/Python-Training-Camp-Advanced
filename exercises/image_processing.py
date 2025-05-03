@@ -41,6 +41,5 @@ def image_processing_pipeline(image_path):
 
         return edges
 
-    except Exception as e:
-        print(f"处理异常: {str(e)}")
+    except Exception:
         return None
